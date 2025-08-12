@@ -1,103 +1,189 @@
-import Image from "next/image";
+"use client";
+import React, { useState, useEffect } from 'react';
+import { Download, RefreshCw, Copy, Check, QrCode } from 'lucide-react';
+import QRCode from "qrcode";
+import { InfoQR } from './components/infoQR.js';
+import { SizeImage } from './components/sizeImage.js';
+import { ColorCode } from './components/colorCode.js';
+import { InputText } from './components/inputText.js';
+import { LevelAndMargin } from './components/levelAndMargin.js';
+import { useQRHooks } from './hooks/useQRHooks.js';
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [text, setText] = useState('TEXTO DE PRUEBA');
+  const [qrDataUrl, setQrDataUrl] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [error, setError] = useState('');
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const { downloadQR, copyToClipboard } = useQRHooks();
+  // Configuración del QR
+  const [config, setConfig] = useState({
+    size: 256,
+    darkColor: '#000000',
+    lightColor: '#ffffff',
+    errorCorrectionLevel: 'M',
+    margin: 4,
+    format: 'png'
+  });
+
+  // Función para generar QR usando qrcode.js
+  const generateQR = async () => {
+    if (!text.trim()) {
+      setError('Por favor ingresa un texto o URL');
+      return;
+    }
+
+    setIsLoading(true);
+    setError('');
+
+    try {
+      // Simulamos el uso de QRCode.toDataURL (en producción sería exactamente así)
+      const opts = {
+        width: config.size,
+        color: {
+          dark: config.darkColor,
+          light: config.lightColor
+        },
+        errorCorrectionLevel: config.errorCorrectionLevel,
+        margin: config.margin,
+        type: config.format === 'png' ? 'image/png' : 'image/jpeg'
+      };
+
+
+      //En producción, reemplaza todo el código de canvas arriba con esta línea:
+      const dataUrl = await QRCode.toDataURL(text, opts);
+      setQrDataUrl(dataUrl);
+
+    } catch (error) {
+      console.error('Error generando QR:', error);
+      setError('Error al generar el código QR');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Regenerar QR cuando cambian los parámetros
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      generateQR();
+    }, 300); // Debounce para evitar regeneraciones excesivas
+
+    return () => clearTimeout(timeoutId);
+  }, [text, config]);
+
+  // Generar QR inicial
+  useEffect(() => {
+    generateQR();
+  }, []);
+
+  const handleSetConfig = (data) => {
+    setConfig({ ...config, ...data });
+  }
+
+  const handleSetText = (data) => {
+    setText(data);
+  }
+
+  const handleDownloadQR = () => {
+    downloadQR({ qrDataUrl, config });
+  }
+
+  const handleCopyClipboard = () => {
+    copyToClipboard({ qrDataUrl, setCopied, setError });
+  }
+
+  return (
+    <div className="w-full mx-auto p-6 bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+      <div className="bg-white rounded-xl shadow-xl p-8">
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <QrCode className="w-8 h-8 text-blue-600" />
+            <h1 className="text-4xl font-bold text-gray-800">
+              Generador de Códigos QR
+            </h1>
+          </div>
+          <p className="text-gray-600">
+            Crea códigos QR personalizados para textos, URLs y más
+          </p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        <div className="grid grid-cols-2 xl:grid-cols-2 gap-5">
+          {/* Panel de configuración */}
+          <div className="space-y-6">
+            {/* Entrada de texto */}
+            <InputText text={text} handleSetText={handleSetText} />
+            <div className="bg-gray-50 p-6 rounded-lg">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4">Configuración</h2>
+              <SizeImage config={config} handleSetConfig={handleSetConfig} />
+
+              {/*Permite cambiar el color de fondo del QR */}
+              <ColorCode config={config} handleSetConfig={handleSetConfig} />
+
+              <LevelAndMargin config={config} handleSetConfig={handleSetConfig} />
+            </div>
+          </div>
+
+          {/* Panel de vista previa */}
+          <div className="flex flex-col items-center space-y-6">
+            <div className="bg-gray-50 p-6 rounded-lg w-full">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">
+                Vista Previa
+              </h2>
+
+              <div className="flex justify-center mb-4">
+                <div className="relative inline-block">
+                  {qrDataUrl && (
+                    <img
+                      src={qrDataUrl}
+                      alt="Código QR generado"
+                      className="border border-gray-300 rounded-lg shadow-lg max-w-full h-auto"
+                      style={{ maxWidth: '320px' }}
+                    />
+                  )}
+
+                  {isLoading && (
+                    <div className="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center rounded-lg">
+                      <div className="text-center">
+                        <RefreshCw className="w-8 h-8 animate-spin text-blue-500 mx-auto mb-2" />
+                        <p className="text-sm text-gray-600">Generando QR...</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {error && (
+                    <div className="absolute inset-0 bg-red-50 border border-red-300 rounded-lg flex items-center justify-center">
+                      <p className="text-red-600 text-sm text-center p-4">{error}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex gap-3 justify-center">
+                <button
+                  onClick={handleDownloadQR}
+                  disabled={!qrDataUrl || isLoading}
+                  className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all transform hover:scale-105 disabled:hover:scale-100"
+                >
+                  <Download className="w-5 h-5" />
+                  Descargar
+                </button>
+
+                <button
+                  onClick={handleCopyClipboard}
+                  disabled={!qrDataUrl || isLoading}
+                  className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all transform hover:scale-105 disabled:hover:scale-100"
+                >
+                  {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+                  {copied ? '¡Copiado!' : 'Copiar'}
+                </button>
+              </div>
+            </div>
+
+            {qrDataUrl && (<InfoQR config={config} />)}
+          </div>
+        </div>
+      </div>
     </div>
   );
-}
+};

@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: genqr
+    env: node
+    repo: https://github.com/CHPgmz/genqr.git
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    plan: free
+    branch: dev
+    autoDeploy: true
