@@ -92,7 +92,7 @@ export default function Home() {
   };
 
   return (
-    <div className="w-full h-screen sm:h-auto mx-auto flex p-6 bg-gradient-to-br from-blue-50 to-indigo-100 justify-center">
+    <div className="w-full h-svh sm:h-auto mx-auto flex p-4 bg-gradient-to-br from-blue-50 to-indigo-100 justify-center">
       <div className="bg-white rounded-xl shadow-xl p-8 w-4/5 flex flex-wrap justify-center">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
