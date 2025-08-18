@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://genqr.ja-dbmjr.workers.dev
+
+# Sitemaps
+Sitemap: https://genqr.ja-dbmjr.workers.dev/sitemap.xml

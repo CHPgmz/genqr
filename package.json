@@ -9,21 +9,23 @@
     "lint": "next lint",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "postbuild": "next-sitemap"
   },
   "dependencies": {
+    "@opennextjs/cloudflare": "^1.6.5",
     "lucide-react": "^0.539.0",
     "next": "15.4.6",
     "qrcode": "^1.5.4",
     "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "@opennextjs/cloudflare": "^1.6.5"
+    "react-dom": "19.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.4.6",
+    "next-sitemap": "^4.2.3",
     "tailwindcss": "^4",
     "wrangler": "^4.28.1"
   }

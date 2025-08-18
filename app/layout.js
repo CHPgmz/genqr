@@ -12,8 +12,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Generacion de QRs",
+  title: { default: "Generacion QRs", template: "%s | genqr" },
   description: "Pagina web para generar QR, con links o texto",
+  alternates: { canonical: "/" },
+  metadataBase: new URL("https://genqr.ja-dbmjr.workers.dev"),
 };
 
 export default function RootLayout({ children }) {
