@@ -98,6 +98,10 @@ export default function Home() {
         <title>Título único</title>
         <meta name="description" content="Descripción única" />
         <meta name="robots" content="index, follow" />
+        <meta
+          name="google-site-verification"
+          content="4ju-krxrqjfOdPgw2ZPb8ggabzIh2kQnH8YQBcGroY0"
+        />
         <link rel="canonical" href="https://genqr.ja-dbmjr.workers.dev" />
       </Head>
 
