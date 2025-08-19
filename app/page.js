@@ -2,13 +2,14 @@
 import React, { useState, useEffect } from "react";
 import { Download, RefreshCw, Copy, Check, QrCode } from "lucide-react";
 import QRCode from "qrcode";
+import Head from "next/head";
+import Image from "next/image";
 import { InfoQR } from "./components/infoQR.js";
 import { SizeImage } from "./components/sizeImage.js";
 import { ColorCode } from "./components/colorCode.js";
 import { InputText } from "./components/inputText.js";
 import { LevelAndMargin } from "./components/levelAndMargin.js";
 import { useQRHooks } from "./hooks/useQRHooks.js";
-import Head from "next/head";
 
 export default function Home() {
   const [text, setText] = useState("TEXTO DE PRUEBA");
@@ -94,17 +95,6 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <title>Título único</title>
-        <meta name="description" content="Descripción única" />
-        <meta name="robots" content="index, follow" />
-        <meta
-          name="google-site-verification"
-          content="4ju-krxrqjfOdPgw2ZPb8ggabzIh2kQnH8YQBcGroY0"
-        />
-        <link rel="canonical" href="https://genqr.ja-dbmjr.workers.dev" />
-      </Head>
-
       <div className="w-full h-svh sm:h-auto mx-auto flex p-4 bg-gradient-to-br from-blue-50 to-indigo-100 justify-center">
         <div className="bg-white rounded-xl shadow-xl p-8 w-4/5 flex flex-wrap justify-center">
           <div className="text-center mb-8">
@@ -150,11 +140,13 @@ export default function Home() {
                 <div className="flex justify-center mb-4">
                   <div className="relative inline-block">
                     {qrDataUrl && (
-                      <img
+                      <Image
                         src={qrDataUrl}
                         alt="Código QR generado"
                         className="border border-gray-300 rounded-lg shadow-lg max-w-full h-auto"
                         style={{ maxWidth: "320px" }}
+                        width={320}
+                        height={320}
                       />
                     )}
 
